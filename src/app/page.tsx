@@ -2,9 +2,17 @@
 
 import Navbar from "./_components/Navbar";
 import Footer from "./_components/Footer";
+import { SessionProvider } from "next-auth/react";
+import GoogleButton from "./_components/GoogleButton";
+
 
 const HomePage = () => {
+
+  
+
   return (
+    <SessionProvider>
+
     <div className="min-h-screen">
       {/* Navbar */}
       {/* <Navbar /> */}
@@ -16,10 +24,12 @@ const HomePage = () => {
           Experience premium haircuts and grooming services tailored just for you.
         </p>
       </main>
+      <GoogleButton />
 
       {/* Footer */}
       {/* <Footer /> */}
     </div>
+    </SessionProvider>
   );
 };
 
