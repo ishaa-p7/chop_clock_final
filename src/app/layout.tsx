@@ -1,9 +1,12 @@
+"use client"
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider"
 import Navbar from "./_components/Navbar";
 import Footer from "./_components/Footer";
+import { SessionProvider } from "next-auth/react";
 
 
 const geistSans = Geist({
@@ -16,10 +19,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Chop Clock",
-  description: "Web engg project",
-};
+
 
 export default function RootLayout({
   children,
@@ -32,9 +32,11 @@ export default function RootLayout({
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
           >
       <ThemeProvider attribute="class" defaultTheme="system">
+      <SessionProvider>
         <Navbar />
           {children}
     <Footer />
+    </SessionProvider>
     </ThemeProvider>
         </body>
       </html>

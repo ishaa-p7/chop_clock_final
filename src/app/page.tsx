@@ -11,7 +11,7 @@ const HomePage = () => {
   
 
   return (
-    <SessionProvider>
+    // <SessionProvider>
 
     <div className="min-h-screen">
       {/* Navbar */}
@@ -24,12 +24,11 @@ const HomePage = () => {
           Experience premium haircuts and grooming services tailored just for you.
         </p>
       </main>
-      <GoogleButton />
+   
 
       {/* Footer */}
       {/* <Footer /> */}
     </div>
-    </SessionProvider>
   );
 };
 
