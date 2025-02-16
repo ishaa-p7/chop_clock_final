@@ -11,7 +11,8 @@ const Navbar = () => {
   const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const { data: session } = useSession(); // Get user session
-
+  console.log(session);
+  
   useEffect(() => setMounted(true), []);
 
   return (
@@ -35,12 +36,12 @@ const Navbar = () => {
           <div className="flex items-center space-x-4">
             {/* Avatar */}
             <img
-              src={session.user?.image || "/default-avatar.png"}
+              src={session.user?.image || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRISxBTQ88B9PvlreCwRY0_wqZK7y4XoG4zIQ&s"}
               alt="User Avatar"
               className="w-10 h-10 rounded-full"
             />
             {/* Username */}
-            <span className="font-medium">{session.user?.name}</span>
+            <span className="font-medium">{session.user?.email}</span>
             {/* Logout Button */}
             <button
               onClick={() => signOut()}
