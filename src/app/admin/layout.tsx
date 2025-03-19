@@ -3,13 +3,13 @@
 import AdminGaurd from '../_components/AdminGaurd'
 
 export default function RootLayout({
-    children,
+  children,
 }: Readonly<{
-    children: React.ReactNode
+  children: React.ReactNode
 }>) {
-    return (
-        <AdminGaurd>
-            <main>{children}</main>
-        </AdminGaurd>
-    )
+  return (
+    <AdminGaurd>
+      <main>{children}</main>
+    </AdminGaurd>
+  )
 }
