@@ -151,3 +151,134 @@ export interface Shop {
       },
     ],
   }
+
+  export interface Appointment {
+    id: string
+    customerName: string
+    customerEmail: string
+    customerPhone: string
+    date: string
+    time: string
+    service: string
+    serviceId: string
+    price: number
+    duration: number
+    status: "pending" | "completed" | "cancelled"
+  }
+  
+  // Mock appointments
+  export function getAppointments(): Appointment[] {
+    return [
+      {
+        id: "apt1",
+        customerName: "John Smith",
+        customerEmail: "john@example.com",
+        customerPhone: "(555) 111-2222",
+        date: "2023-06-15",
+        time: "10:00 AM",
+        service: "Classic Haircut",
+        serviceId: "service1",
+        price: 25,
+        duration: 30,
+        status: "completed",
+      },
+      {
+        id: "apt2",
+        customerName: "Michael Johnson",
+        customerEmail: "michael@example.com",
+        customerPhone: "(555) 333-4444",
+        date: "2023-06-15",
+        time: "2:30 PM",
+        service: "Luxury Grooming Package",
+        serviceId: "service7",
+        price: 75,
+        duration: 90,
+        status: "pending",
+      },
+      {
+        id: "apt3",
+        customerName: "David Williams",
+        customerEmail: "david@example.com",
+        customerPhone: "(555) 555-6666",
+        date: "2023-06-16",
+        time: "11:00 AM",
+        service: "Hair & Beard Combo",
+        serviceId: "service4",
+        price: 40,
+        duration: 50,
+        status: "pending",
+      },
+      {
+        id: "apt4",
+        customerName: "Robert Brown",
+        customerEmail: "robert@example.com",
+        customerPhone: "(555) 777-8888",
+        date: "2023-06-16",
+        time: "3:00 PM",
+        service: "Hot Towel Shave",
+        serviceId: "service3",
+        price: 35,
+        duration: 45,
+        status: "pending",
+      },
+      {
+        id: "apt5",
+        customerName: "James Davis",
+        customerEmail: "james@example.com",
+        customerPhone: "(555) 999-0000",
+        date: "2023-06-17",
+        time: "1:00 PM",
+        service: "Classic Haircut",
+        serviceId: "service1",
+        price: 25,
+        duration: 30,
+        status: "pending",
+      },
+      {
+        id: "apt6",
+        customerName: "Thomas Miller",
+        customerEmail: "thomas@example.com",
+        customerPhone: "(555) 123-9876",
+        date: "2023-06-17",
+        time: "4:30 PM",
+        service: "Hair Coloring",
+        serviceId: "service6",
+        price: 55,
+        duration: 60,
+        status: "cancelled",
+      },
+      {
+        id: "apt7",
+        customerName: "William Wilson",
+        customerEmail: "william@example.com",
+        customerPhone: "(555) 456-7890",
+        date: "2023-06-18",
+        time: "9:30 AM",
+        service: "Hair & Beard Combo",
+        serviceId: "service4",
+        price: 40,
+        duration: 50,
+        status: "pending",
+      },
+      {
+        id: "apt8",
+        customerName: "Daniel Taylor",
+        customerEmail: "daniel@example.com",
+        customerPhone: "(555) 987-6543",
+        date: "2023-06-18",
+        time: "2:00 PM",
+        service: "Beard Trim",
+        serviceId: "service2",
+        price: 15,
+        duration: 20,
+        status: "pending",
+      },
+    ]
+  }
+  
+  export const getShopById = (id: string): Shop | undefined => {
+    if (shop.id === id) {
+      return shop
+    }
+    return undefined
+  }

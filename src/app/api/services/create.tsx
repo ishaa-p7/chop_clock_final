@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/db";
 import { getUserRole } from "@/lib/auth";
 
 export async function POST(req: Request) {
@@ -25,6 +25,7 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ message: "Service added", service });
+    
   } catch (error) {
     return NextResponse.json({ error: "Error adding service" }, { status: 500 });
   }
