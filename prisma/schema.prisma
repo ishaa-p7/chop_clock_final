@@ -13,11 +13,83 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// 📌 User Model
 model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId // Use ObjectId native type
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   username  String
   email     String   @unique
   password  String
+  role      String   @default("USER") // 'USER' or 'ADMIN'
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Relations
+  appointments Appointment[]
+  reviews      Review[]
+}
+
+// 📌 Appointment Model
+model Appointment {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  customerName  String
+  customerEmail String
+  customerPhone String
+  date          DateTime
+  time          String
+  price         Float
+  duration      Int
+  status        String   @default("pending") // 'pending', 'completed', 'cancelled'
+
+  // Relations
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id])
+
+  serviceId String  @db.ObjectId
+  service   Service @relation(fields: [serviceId], references: [id])
+}
+
+// 📌 Review Model
+model Review {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  rating  Int
+  comment String
+  date    DateTime @default(now())
+
+  // Relations
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id])
+
+  shopId String @db.ObjectId
+  shop   Shop   @relation(fields: [shopId], references: [id])
+}
+
+// 📌 Service Model
+model Service {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String
+  price       Float
+  duration    Int
+
+  // Relations
+  shopId       String        @db.ObjectId
+  shop         Shop          @relation(fields: [shopId], references: [id])
+  appointments Appointment[]
+}
+
+// 📌 Shop Model
+model Shop {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  tagline     String
+  location    String
+  description String
+  phone       String
+  hours       String
+  rating      Float
+  reviewCount Int
+
+  // Relations
+  services Service[]
+  reviews  Review[]
 }

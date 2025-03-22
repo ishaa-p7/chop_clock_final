@@ -4,7 +4,7 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import { prisma } from '@/lib/db'
 import bcrypt from 'bcrypt'
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
     providers: [
         CredentialsProvider({
             name: 'Credentials',
@@ -19,7 +19,6 @@ export const authOptions = {
 
                 // Check if user is signing up (via `username` presence)
                 if (username) {
-                    // Check if user already exists
                     const existingUser = await prisma.user.findUnique({
                         where: { email },
                     })
@@ -27,23 +26,22 @@ export const authOptions = {
                         throw new Error('User already exists')
                     }
 
-                    // Hash password
                     const hashedPassword = await bcrypt.hash(password, 10)
 
-                    // Create the user in the database
+                    // Create the user with default role 'USER'
                     const newUser = await prisma.user.create({
                         data: {
                             username,
                             email,
                             password: hashedPassword,
+                          //  role: 'USER', // Set default role
                         },
                     })
 
-                    // Return newly created user for authentication
                     return newUser
                 }
 
-                // If not signing up, validate user credentials (login)
+                // Login flow: Check user credentials
                 const user = await prisma.user.findUnique({
                     where: { email },
                 })
@@ -78,7 +76,8 @@ export const authOptions = {
             if (user) {
                 token.id = user.id
                 token.email = user.email
-                token.username = user.name
+                token.username = user.username
+                token.role = user.role // ✅ Include role in JWT
             }
             return token
         },
@@ -87,7 +86,7 @@ export const authOptions = {
                 session.user.id = token.id
                 session.user.email = token.email
                 session.user.username = token.username
-                return session
+                session.user.role = token.role // ✅ Include role in session
             }
             return session
         },

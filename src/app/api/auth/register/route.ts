@@ -2,11 +2,9 @@ import { NextResponse } from 'next/server'
 import bcrypt from 'bcrypt'
 import { prisma } from '@/lib/db'
 
-//This route is for testing.
-//signup apan next-auth se kara rhe he isko mat dekh
 export async function POST(req: Request) {
     try {
-        const { username, email, password } = await req.json()
+        const { username, email, password, role } = await req.json()
 
         // Check if all required fields are provided
         if (!username || !email || !password) {
@@ -28,17 +26,19 @@ export async function POST(req: Request) {
             )
         }
 
-        console.log({ username, email, password })
+        console.log({ username, email, password, role })
+
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10)
 
-        // Create new user
+        // Create new user with a default role (if not provided)
         const newUser = await prisma.user.create({
             data: {
                 username,
                 email,
                 password: hashedPassword,
-            },
+              //  role: role || 'USER',  // Default to "USER" if role is not provided
+            }
         })
 
         return NextResponse.json(
