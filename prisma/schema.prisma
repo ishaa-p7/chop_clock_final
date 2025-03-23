@@ -28,25 +28,6 @@ model User {
   reviews      Review[]
 }
 
-// 📌 Appointment Model
-model Appointment {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  customerName  String
-  customerEmail String
-  customerPhone String
-  date          DateTime
-  time          String
-  price         Float
-  duration      Int
-  status        String   @default("pending") // 'pending', 'completed', 'cancelled'
-
-  // Relations
-  userId String @db.ObjectId
-  user   User   @relation(fields: [userId], references: [id])
-
-  serviceId String  @db.ObjectId
-  service   Service @relation(fields: [serviceId], references: [id])
-}
 
 // 📌 Review Model
 model Review {
@@ -63,20 +44,37 @@ model Review {
   shop   Shop   @relation(fields: [shopId], references: [id])
 }
 
-// 📌 Service Model
+model Appointment {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  customerName  String
+  customerEmail String
+  customerPhone String
+  date          DateTime
+  time          String
+  totalPrice    Float
+  totalDuration Int
+  status        String    @default("pending")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  userId    String    @db.ObjectId
+  user      User      @relation(fields: [userId], references: [id])
+  serviceIds String[] @db.ObjectId
+  services  Service[] @relation(fields: [serviceIds], references: [id])
+}
+
 model Service {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
   name        String
   description String
   price       Float
   duration    Int
-
-  // Relations
-  shopId       String        @db.ObjectId
-  shop         Shop          @relation(fields: [shopId], references: [id])
-  appointments Appointment[]
+  shopId      String        @db.ObjectId
+  shop        Shop          @relation(fields: [shopId], references: [id])
+  appointmentIds String[]   @db.ObjectId
+  appointments Appointment[] @relation(fields: [appointmentIds], references: [id])
 }
-
 // 📌 Shop Model
 model Shop {
   id          String @id @default(auto()) @map("_id") @db.ObjectId
