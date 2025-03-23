@@ -17,7 +17,7 @@ export const authOptions: NextAuthOptions = {
             async authorize(credentials: any) {
                 const { email, password, username } = credentials
 
-                // Check if user is signing up (via `username` presence)
+                // If username is provided, it's a signup request
                 if (username) {
                     const existingUser = await prisma.user.findUnique({
                         where: { email },
@@ -28,13 +28,13 @@ export const authOptions: NextAuthOptions = {
 
                     const hashedPassword = await bcrypt.hash(password, 10)
 
-                    // Create the user with default role 'USER'
+                    // Create a new user with default role 'USER'
                     const newUser = await prisma.user.create({
                         data: {
                             username,
                             email,
                             password: hashedPassword,
-                          //  role: 'USER', // Set default role
+                            role: 'USER', // ✅ Ensure role is assigned
                         },
                     })
 
@@ -44,16 +44,20 @@ export const authOptions: NextAuthOptions = {
                 // Login flow: Check user credentials
                 const user = await prisma.user.findUnique({
                     where: { email },
+                    select: {
+                        id: true,
+                        email: true,
+                        username: true,
+                        password: true,
+                        role: true, // ✅ Fetch role from DB
+                    },
                 })
 
                 if (!user) {
                     throw new Error('User not found')
                 }
 
-                const isValidPassword = await bcrypt.compare(
-                    password,
-                    user.password,
-                )
+                const isValidPassword = await bcrypt.compare(password, user.password)
                 if (!isValidPassword) {
                     throw new Error('Invalid credentials')
                 }
@@ -79,14 +83,17 @@ export const authOptions: NextAuthOptions = {
                 token.username = user.username
                 token.role = user.role // ✅ Include role in JWT
             }
+            console.log("JWT Token:", token)
             return token
         },
         async session({ session, token }: { session: any; token: any }) {
             if (token) {
-                session.user.id = token.id
-                session.user.email = token.email
-                session.user.username = token.username
-                session.user.role = token.role // ✅ Include role in session
+                session.user = {
+                    id: token.id,
+                    email: token.email,
+                    username: token.username,
+                    role: token.role as string, // ✅ Pass role to session
+                }
             }
             return session
         },

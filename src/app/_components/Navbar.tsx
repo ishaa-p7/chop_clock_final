@@ -1,19 +1,27 @@
 'use client'
 
 import { useTheme } from 'next-themes'
-import { useEffect, useState } from 'react'
 import { useSession, signIn, signOut } from 'next-auth/react'
+import { useEffect, useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { ModeToggle } from '@/components/theme-toggler'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 const Navbar = () => {
     const { resolvedTheme, setTheme } = useTheme()
-    const [mounted, setMounted] = useState(false)
-    const { data: session } = useSession() // Get user session
-    console.log(session)
+    const { data: session, status } = useSession(); // No need for `update`
+    const router = useRouter(); // For navigation
 
-    useEffect(() => setMounted(true), [])
+    // Debugging: Log session to see if role is present
+    useEffect(() => {
+        console.log("Session in Navbar:", session);
+    }, [session]);
+
+    // Check if user is an admin
+    const isAdmin = session?.user?.role === 'ADMIN';
+
+    if (status === 'loading') return null; // Prevent UI from rendering before session loads
 
     return (
         <nav className="flex items-center justify-between p-4 shadow-md">
@@ -33,6 +41,15 @@ const Navbar = () => {
             {/* Right: Theme Toggle + Auth Buttons */}
             <div className="flex items-center space-x-4">
                 <ModeToggle />
+
+                {isAdmin && (
+                    <button
+                        onClick={() => router.push('/admin')}
+                        className="px-4 py-2 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 transition-all"
+                    >
+                        Admin
+                    </button>
+                )}
 
                 {session ? (
                     <div className="flex items-center space-x-4">

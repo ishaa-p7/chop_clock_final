@@ -1,8 +1,7 @@
 "use client"
 
 import type React from "react"
-
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { ArrowLeft, Scissors, Save, Clock, MapPin, Phone, Star } from "lucide-react"
@@ -14,29 +13,38 @@ import { Textarea } from "@/components/ui/textarea"
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { toast } from "@/components/ui/use-toast"
-import { shop } from "@/lib/data"
+
+interface ShopData {
+  name: string
+  tagline: string
+  location: string
+  description: string
+  phone: string
+  hours: string
+  rating: string
+  reviewCount: string
+}
 
 export default function AdminShop() {
   const router = useRouter()
-
-  const [shopData, setShopData] = useState({
-    name: shop.name,
-    tagline: shop.tagline,
-    location: shop.location,
-    description: shop.description,
-    phone: shop.phone,
-    hours: shop.hours,
-    rating: shop.rating.toString(),
-    reviewCount: shop.reviewCount.toString(),
+  const [shopData, setShopData] = useState<ShopData>({
+    name: '',
+    tagline: '',
+    location: '',
+    description: '',
+    phone: '',
+    hours: '',
+    rating: '0',
+    reviewCount: '0'
   })
-
+  const [previewData, setPreviewData] = useState<ShopData | null>(null)
+  
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setShopData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleSave = () => {
-    // Validation
+  const handleCreateShop = async () => {
     if (
       !shopData.name ||
       !shopData.tagline ||
@@ -49,17 +57,58 @@ export default function AdminShop() {
         title: "Missing information",
         description: "Please fill in all required fields.",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
-
-    // In a real app, this would save to the database
-    console.log("Saving shop data:", shopData)
-
-    toast({
-      title: "Shop details updated",
-      description: "Your shop information has been successfully updated.",
-    })
+  
+    try {
+      const response = await fetch('/api/shop', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...shopData,
+          rating: parseFloat(shopData.rating),
+          reviewCount: parseInt(shopData.reviewCount),
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to create shop');
+      }
+  
+      toast({
+        title: "Shop saved successfully",
+        description: "Your shop information has been updated.",
+      });
+  
+      loadPreview();
+  
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Error saving shop",
+        description: error instanceof Error ? error.message : "Unknown error",
+        variant: "destructive",
+      });
+    }
+  }
+  const loadPreview = async () => {
+    try {
+      const response = await fetch('/api/shop')
+      if (!response.ok) return
+      const data = await response.json()
+      setPreviewData(data)
+    } catch (error) {
+      console.error(error)
+      toast({
+        title: "Error loading preview",
+        variant: "destructive",
+      })
+    }
   }
 
   return (
@@ -69,7 +118,7 @@ export default function AdminShop() {
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
               <Scissors className="h-6 w-6" />
-              <h1 className="text-2xl font-bold">{shop.name}</h1>
+              <h1 className="text-2xl font-bold">Shop Admin</h1>
             </div>
             <div className="flex gap-3">
               <Link href="/">
@@ -86,25 +135,27 @@ export default function AdminShop() {
       <main className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-blue-800">Shop Details</h1>
-            <p className="text-slate-600">Manage your barber shop information</p>
+            <h1 className="text-3xl font-bold text-blue-800">Shop Setup</h1>
+            <p className="text-slate-600">Create your barber shop profile</p>
           </div>
           <Button variant="ghost" className="text-blue-600" onClick={() => router.push("/admin")}>
             <ArrowLeft className="mr-2 h-4 w-4" /> Back to Dashboard
           </Button>
         </div>
 
-        <Tabs defaultValue="edit">
+        <Tabs defaultValue="create">
           <TabsList className="mb-6">
-            <TabsTrigger value="edit">Edit Details</TabsTrigger>
-            <TabsTrigger value="preview">Preview</TabsTrigger>
+            <TabsTrigger value="create">Create Shop</TabsTrigger>
+            <TabsTrigger value="preview" onClick={loadPreview}>
+              Preview
+            </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="edit">
+          <TabsContent value="create">
             <Card>
               <CardHeader>
-                <CardTitle className="text-xl text-blue-800">Shop Information</CardTitle>
-                <CardDescription>Update your shop details that will be displayed to customers</CardDescription>
+                <CardTitle className="text-xl text-blue-800">New Shop Details</CardTitle>
+                <CardDescription>Enter your shop information to get started</CardDescription>
               </CardHeader>
               <CardContent>
                 <form className="space-y-6">
@@ -197,8 +248,8 @@ export default function AdminShop() {
                   </div>
 
                   <div className="flex justify-end">
-                    <Button type="button" className="bg-blue-600 hover:bg-blue-700" onClick={handleSave}>
-                      <Save className="mr-2 h-4 w-4" /> Save Changes
+                    <Button type="button" className="bg-blue-600 hover:bg-blue-700" onClick={handleCreateShop}>
+                      <Save className="mr-2 h-4 w-4" /> Create Shop
                     </Button>
                   </div>
                 </form>
@@ -210,65 +261,73 @@ export default function AdminShop() {
             <Card>
               <CardHeader>
                 <CardTitle className="text-xl text-blue-800">Shop Preview</CardTitle>
-                <CardDescription>This is how your shop information will appear to customers</CardDescription>
+                <CardDescription>This is how your shop will appear to customers</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="bg-white rounded-lg border p-6">
-                  <div className="mb-6">
-                    <h2 className="text-3xl font-bold text-blue-800">{shopData.name}</h2>
-                    <p className="text-lg text-slate-600 mt-1">{shopData.tagline}</p>
-                  </div>
+                {previewData ? (
+                  <div className="bg-white rounded-lg border p-6">
+                    <div className="mb-6">
+                      <h2 className="text-3xl font-bold text-blue-800">{previewData.name}</h2>
+                      <p className="text-lg text-slate-600 mt-1">{previewData.tagline}</p>
+                    </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                    <div className="flex items-start gap-3">
-                      <div className="bg-blue-100 p-2 rounded-full h-10 w-10 flex items-center justify-center shrink-0">
-                        <MapPin className="h-5 w-5 text-blue-600" />
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                      <div className="flex items-start gap-3">
+                        <div className="bg-blue-100 p-2 rounded-full h-10 w-10 flex items-center justify-center shrink-0">
+                          <MapPin className="h-5 w-5 text-blue-600" />
+                        </div>
+                        <div>
+                          <h3 className="font-medium">Location</h3>
+                          <p className="text-slate-600">{previewData.location}</p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="font-medium">Location</h3>
-                        <p className="text-slate-600">{shopData.location}</p>
+
+                      <div className="flex items-start gap-3">
+                        <div className="bg-blue-100 p-2 rounded-full h-10 w-10 flex items-center justify-center shrink-0">
+                          <Phone className="h-5 w-5 text-blue-600" />
+                        </div>
+                        <div>
+                          <h3 className="font-medium">Contact</h3>
+                          <p className="text-slate-600">{previewData.phone}</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3">
+                        <div className="bg-blue-100 p-2 rounded-full h-10 w-10 flex items-center justify-center shrink-0">
+                          <Clock className="h-5 w-5 text-blue-600" />
+                        </div>
+                        <div>
+                          <h3 className="font-medium">Hours</h3>
+                          <p className="text-slate-600">{previewData.hours}</p>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="flex items-start gap-3">
-                      <div className="bg-blue-100 p-2 rounded-full h-10 w-10 flex items-center justify-center shrink-0">
-                        <Phone className="h-5 w-5 text-blue-600" />
-                      </div>
-                      <div>
-                        <h3 className="font-medium">Contact</h3>
-                        <p className="text-slate-600">{shopData.phone}</p>
-                      </div>
+                    <div className="mb-6">
+                      <h3 className="text-xl font-semibold text-blue-800 mb-2">About Us</h3>
+                      <p className="text-slate-600">{previewData.description}</p>
                     </div>
 
-                    <div className="flex items-start gap-3">
-                      <div className="bg-blue-100 p-2 rounded-full h-10 w-10 flex items-center justify-center shrink-0">
-                        <Clock className="h-5 w-5 text-blue-600" />
+                    <div className="flex items-center gap-3">
+                      <div className="flex">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`h-5 w-5 ${
+                              i < Number.parseFloat(previewData.rating) 
+                                ? "text-yellow-500 fill-yellow-500" 
+                                : "text-slate-300"
+                            }`}
+                          />
+                        ))}
                       </div>
-                      <div>
-                        <h3 className="font-medium">Hours</h3>
-                        <p className="text-slate-600">{shopData.hours}</p>
-                      </div>
+                      <span className="text-slate-600">{previewData.rating} out of 5</span>
+                      <span className="text-slate-500">({previewData.reviewCount} reviews)</span>
                     </div>
                   </div>
-
-                  <div className="mb-6">
-                    <h3 className="text-xl font-semibold text-blue-800 mb-2">About Us</h3>
-                    <p className="text-slate-600">{shopData.description}</p>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <div className="flex">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`h-5 w-5 ${i < Number.parseFloat(shopData.rating) ? "text-yellow-500 fill-yellow-500" : "text-slate-300"}`}
-                        />
-                      ))}
-                    </div>
-                    <span className="text-slate-600">{shopData.rating} out of 5</span>
-                    <span className="text-slate-500">({shopData.reviewCount} reviews)</span>
-                  </div>
-                </div>
+                ) : (
+                  <div className="text-center py-4">No shop created yet</div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -278,11 +337,10 @@ export default function AdminShop() {
       <footer className="bg-blue-800 text-white py-8 mt-20">
         <div className="container mx-auto px-4 text-center">
           <p className="text-blue-200">
-            © {new Date().getFullYear()} {shop.name} Admin Dashboard. All rights reserved.
+            © {new Date().getFullYear()} Barber Shop Admin. All rights reserved.
           </p>
         </div>
       </footer>
     </div>
   )
 }
-
