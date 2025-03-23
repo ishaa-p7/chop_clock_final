@@ -1,10 +1,10 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/config/authOptions'
 
 export async function DELETE(
-    req: Request,
+    req: NextRequest,
     { params }: { params: { id: string } },
 ) {
     try {
