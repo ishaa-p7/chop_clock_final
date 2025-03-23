@@ -1,18 +1,15 @@
 'use client'
 
-import AdminGaurd from "../_components/AdminGaurd";
+import AdminGaurd from '../_components/AdminGaurd'
 
 export default function RootLayout({
     children,
 }: Readonly<{
     children: React.ReactNode
 }>) {
-
     return (
         <AdminGaurd>
-            <main>
-                {children}
-            </main>
+            <main>{children}</main>
         </AdminGaurd>
     )
 }

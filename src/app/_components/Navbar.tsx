@@ -10,21 +10,20 @@ import { useRouter } from 'next/navigation'
 
 const Navbar = () => {
     // const { resolvedTheme, setTheme } = useTheme()
-    const { data: session, status  } = useSession(); // No need for `update`
-    const router = useRouter(); // For navigation
+    const { data: session, status } = useSession() // No need for `update`
+    const router = useRouter() // For navigation
 
-    console.log(session);
-    
+    console.log(session)
 
     // Debugging: Log session to see if role is present
     useEffect(() => {
-        console.log("Session in Navbar:", session);
-    }, [session]);
+        console.log('Session in Navbar:', session)
+    }, [session])
 
     // Check if user is an admin
-    const isAdmin = session?.user?.role === 'ADMIN' || false;
+    const isAdmin = session?.user?.role === 'ADMIN' || false
 
-    if (status === 'loading') return null; // Prevent UI from rendering before session loads
+    if (status === 'loading') return null // Prevent UI from rendering before session loads
 
     return (
         <nav className="flex items-center justify-between p-4 shadow-md">

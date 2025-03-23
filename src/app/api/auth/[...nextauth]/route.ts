@@ -57,7 +57,10 @@ export const authOptions: NextAuthOptions = {
                     throw new Error('User not found')
                 }
 
-                const isValidPassword = await bcrypt.compare(password, user.password)
+                const isValidPassword = await bcrypt.compare(
+                    password,
+                    user.password,
+                )
                 if (!isValidPassword) {
                     throw new Error('Invalid credentials')
                 }
@@ -83,7 +86,7 @@ export const authOptions: NextAuthOptions = {
                 token.username = user.username
                 token.role = user.role // ✅ Include role in JWT
             }
-            console.log("JWT Token:", token)
+            console.log('JWT Token:', token)
             return token
         },
         async session({ session, token }: { session: any; token: any }) {

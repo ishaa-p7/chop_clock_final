@@ -37,8 +37,8 @@ export async function POST(req: Request) {
                 username,
                 email,
                 password: hashedPassword,
-              //  role: role || 'USER',  // Default to "USER" if role is not provided
-            }
+                //  role: role || 'USER',  // Default to "USER" if role is not provided
+            },
         })
 
         return NextResponse.json(
