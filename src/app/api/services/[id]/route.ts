@@ -5,16 +5,17 @@ import { authOptions } from '@/lib/config/authOptions'
 
 export async function DELETE(
     req: NextRequest,
-    { params }: { params: { id: string } },
+    context: { params: Promise<{ id: string }> },
 ) {
     try {
+        const { id } = await context.params // Await params in case it's a Promise
         const session = await getServerSession(authOptions)
         if (!session?.user?.id) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         }
 
         await prisma.service.delete({
-            where: { id: params.id },
+            where: { id: id },
         })
 
         return NextResponse.json({ message: 'Service deleted successfully' })
