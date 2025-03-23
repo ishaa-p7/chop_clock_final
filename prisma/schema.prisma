@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// 📌 User Model
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  username  String
+  email     String   @unique
+  password  String
+  role      String   @default("USER") // 'USER' or 'ADMIN'
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  appointments Appointment[]
+  reviews      Review[]
+}
+
+
+// 📌 Review Model
+model Review {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  rating  Int
+  comment String
+  date    DateTime @default(now())
+
+  // Relations
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id])
+
+  shopId String @db.ObjectId
+  shop   Shop   @relation(fields: [shopId], references: [id])
+}
+
+model Appointment {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  customerName  String
+  customerEmail String
+  customerPhone String
+  date          DateTime
+  time          String
+  totalPrice    Float
+  totalDuration Int
+  status        String    @default("pending")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  userId    String    @db.ObjectId
+  user      User      @relation(fields: [userId], references: [id])
+  serviceIds String[] @db.ObjectId
+  services  Service[] @relation(fields: [serviceIds], references: [id])
+}
+
+model Service {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String
+  price       Float
+  duration    Int
+  shopId      String        @db.ObjectId
+  shop        Shop          @relation(fields: [shopId], references: [id])
+  appointmentIds String[]   @db.ObjectId
+  appointments Appointment[] @relation(fields: [appointmentIds], references: [id])
+}
+// 📌 Shop Model
+model Shop {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  tagline     String
+  location    String
+  description String
+  phone       String
+  hours       String
+  rating      Float
+  reviewCount Int
+
+  // Relations
+  services Service[]
+  reviews  Review[]
+}
