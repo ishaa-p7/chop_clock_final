@@ -1,17 +1,20 @@
 'use client'
 
-import { useTheme } from 'next-themes'
-import { useSession, signIn, signOut } from 'next-auth/react'
-import { useEffect, useState } from 'react'
+// import { useTheme } from 'next-themes'
+import { useSession, signOut } from 'next-auth/react'
+import { useEffect } from 'react'
 import { Input } from '@/components/ui/input'
 import { ModeToggle } from '@/components/theme-toggler'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 const Navbar = () => {
-    const { resolvedTheme, setTheme } = useTheme()
-    const { data: session, status } = useSession(); // No need for `update`
+    // const { resolvedTheme, setTheme } = useTheme()
+    const { data: session, status  } = useSession(); // No need for `update`
     const router = useRouter(); // For navigation
+
+    console.log(session);
+    
 
     // Debugging: Log session to see if role is present
     useEffect(() => {
@@ -19,7 +22,7 @@ const Navbar = () => {
     }, [session]);
 
     // Check if user is an admin
-    const isAdmin = session?.user?.role === 'ADMIN';
+    const isAdmin = session?.user?.role === 'ADMIN' || false;
 
     if (status === 'loading') return null; // Prevent UI from rendering before session loads
 
