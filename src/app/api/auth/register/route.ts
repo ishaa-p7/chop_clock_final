@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import bcrypt from 'bcrypt'
 import { prisma } from '@/lib/db'
 
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
     try {
         const { username, email, password, role } = await req.json()
 

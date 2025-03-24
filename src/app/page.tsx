@@ -1,30 +1,144 @@
+"use client"
+
+import { useState, useEffect } from "react"
 import Link from 'next/link'
 import { Scissors, Clock, MapPin, Phone, Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import { shop } from '@/lib/data'
+
+interface Shop {
+  id: string
+  name: string
+  tagline: string
+  description: string
+  hours: string
+  phone: string
+  location: string
+}
+
+interface Service {
+  id: string
+  name: string
+  description: string
+  price: number
+  duration: number
+}
+
+const features = [
+  {
+    title: "Expert Barbers",
+    description: "Certified professionals with 10+ years experience",
+    icon: Scissors
+  },
+  {
+    title: "Premium Products",
+    description: "We use only top-quality grooming products",
+    icon: Star
+  },
+  {
+    title: "Hygiene First",
+    description: "Sterilized tools & single-use materials",
+    icon: MapPin
+  }
+]
+
+const reviews = [
+  {
+    id: "1",
+    name: "John Smith",
+    comment: "Best barber experience I've ever had!",
+    rating: 5,
+    date: "2024-03-15"
+  },
+  {
+    id: "2",
+    name: "Mike Johnson",
+    comment: "Consistently great haircuts every time",
+    rating: 5,
+    date: "2024-02-28"
+  },
+  {
+    id: "3",
+    name: "Sarah Wilson",
+    comment: "Friendly staff and amazing service",
+    rating: 4,
+    date: "2024-03-10"
+  }
+]
+
+const rating = 4.8
+const reviewCount = 127
 
 export default function Home() {
+    const [shop, setShop] = useState<Shop | null>(null)
+    const [services, setServices] = useState<Service[]>([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [shopResponse, servicesResponse] = await Promise.all([
+                    fetch('/api/shop'),
+                    fetch('/api/services')
+                ])
+
+                if (!shopResponse.ok) throw new Error('Failed to fetch shop data')
+                if (!servicesResponse.ok) throw new Error('Failed to fetch services')
+
+                const shopData = await shopResponse.json()
+                const servicesData = await servicesResponse.json()
+
+                setShop(shopData)
+                setServices(servicesData)
+            } catch (err) {
+                setError(err instanceof Error ? err.message : 'Failed to load data')
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchData()
+    }, [])
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            </div>
+        )
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+                <div className="text-red-500 text-lg">{error}</div>
+            </div>
+        )
+    }
+
+    if (!shop) {
+        return (
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+                <div className="text-slate-500">No shop data found</div>
+            </div>
+        )
+    }
+
     return (
         <div className="min-h-screen bg-slate-50">
             <main>
-                {/* Hero Section */}
                 <section className="relative">
                     <div className="h-[500px] bg-blue-100 relative">
                         <img
-                            src="/placeholder.svg?height=500&width=1920&text=Premium+Barber+Experience"
+                            src="images/banner1.jpg"
+        
                             alt="Barber Shop"
                             className="w-full h-full object-cover"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/70 to-blue-900/40 flex items-center">
+                        <div className="absolute inset-0  flex items-center">
                             <div className="container mx-auto px-4">
                                 <div className="max-w-xl">
                                     <Badge className="mb-4 bg-blue-500 hover:bg-blue-600">
@@ -38,19 +152,12 @@ export default function Home() {
                                     </p>
                                     <div className="flex flex-wrap gap-4">
                                         <Link href="/book">
-                                            <Button
-                                                size="lg"
-                                                className="bg-blue-600 hover:bg-blue-700"
-                                            >
+                                            <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
                                                 Book Appointment
                                             </Button>
                                         </Link>
                                         <Link href="/#services">
-                                            <Button
-                                                size="lg"
-                                                variant="outline"
-                                                className="bg-transparent border-white text-white hover:bg-blue-700/20"
-                                            >
+                                            <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-blue-700/20">
                                                 View Services
                                             </Button>
                                         </Link>
@@ -61,7 +168,6 @@ export default function Home() {
                     </div>
                 </section>
 
-                {/* Shop Info */}
                 <section className="py-12 bg-white">
                     <div className="container mx-auto px-4">
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
@@ -79,12 +185,8 @@ export default function Home() {
                                         <Clock className="h-5 w-5 text-blue-600" />
                                     </div>
                                     <div>
-                                        <div className="text-sm text-slate-500">
-                                            Working Hours
-                                        </div>
-                                        <div className="font-medium">
-                                            {shop.hours}
-                                        </div>
+                                        <div className="text-sm text-slate-500">Working Hours</div>
+                                        <div className="font-medium">{shop.hours}</div>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2">
@@ -92,12 +194,8 @@ export default function Home() {
                                         <Phone className="h-5 w-5 text-blue-600" />
                                     </div>
                                     <div>
-                                        <div className="text-sm text-slate-500">
-                                            Contact Us
-                                        </div>
-                                        <div className="font-medium">
-                                            {shop.phone}
-                                        </div>
+                                        <div className="text-sm text-slate-500">Contact Us</div>
+                                        <div className="font-medium">{shop.phone}</div>
                                     </div>
                                 </div>
                             </div>
@@ -107,61 +205,38 @@ export default function Home() {
                             <div className="col-span-2">
                                 <div className="aspect-video bg-blue-100 rounded-lg overflow-hidden mb-6">
                                     <img
-                                        src="/placeholder.svg?height=400&width=800&text=Our+Barber+Shop"
+                                        src="images/banner2.webp"
                                         alt="Barber Shop Interior"
                                         className="w-full h-full object-cover"
                                     />
                                 </div>
                                 <div className="grid grid-cols-3 gap-4">
-                                    <div className="aspect-square bg-blue-100 rounded-lg overflow-hidden">
-                                        <img
-                                            src="/placeholder.svg?height=200&width=200&text=Gallery+1"
-                                            alt="Gallery 1"
-                                            className="w-full h-full object-cover"
-                                        />
-                                    </div>
-                                    <div className="aspect-square bg-blue-100 rounded-lg overflow-hidden">
-                                        <img
-                                            src="/placeholder.svg?height=200&width=200&text=Gallery+2"
-                                            alt="Gallery 2"
-                                            className="w-full h-full object-cover"
-                                        />
-                                    </div>
-                                    <div className="aspect-square bg-blue-100 rounded-lg overflow-hidden">
-                                        <img
-                                            src="/placeholder.svg?height=200&width=200&text=Gallery+3"
-                                            alt="Gallery 3"
-                                            className="w-full h-full object-cover"
-                                        />
-                                    </div>
+                                    {[1, 2, 3].map((i) => (
+                                        <div key={i} className="aspect-square bg-blue-100 rounded-lg overflow-hidden object-top">
+                                            <img
+                                                src={`/images/square1.jpg`}
+                                                alt={`Gallery ${i}`}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                             <div>
                                 <Card>
                                     <CardHeader>
-                                        <CardTitle className="text-xl text-blue-800">
-                                            Why Choose Us?
-                                        </CardTitle>
-                                        <CardDescription>
-                                            Experience the difference
-                                        </CardDescription>
+                                        <CardTitle className="text-xl text-blue-800">Why Choose Us?</CardTitle>
+                                        <CardDescription>Experience the difference</CardDescription>
                                     </CardHeader>
                                     <CardContent className="space-y-4">
-                                        {shop.features.map((feature, index) => (
-                                            <div
-                                                key={index}
-                                                className="flex gap-3"
-                                            >
+                                        {features.map((feature, index) => (
+                                            <div key={index} className="flex gap-3">
                                                 <div className="bg-blue-100 p-2 rounded-full h-10 w-10 flex items-center justify-center shrink-0">
                                                     <feature.icon className="h-5 w-5 text-blue-600" />
                                                 </div>
                                                 <div>
-                                                    <h3 className="font-medium">
-                                                        {feature.title}
-                                                    </h3>
-                                                    <p className="text-sm text-slate-500">
-                                                        {feature.description}
-                                                    </p>
+                                                    <h3 className="font-medium">{feature.title}</h3>
+                                                    <p className="text-sm text-slate-500">{feature.description}</p>
                                                 </div>
                                             </div>
                                         ))}
@@ -171,18 +246,13 @@ export default function Home() {
                                                 {[...Array(5)].map((_, i) => (
                                                     <Star
                                                         key={i}
-                                                        className={`h-5 w-5 ${i < shop.rating ? 'text-yellow-500 fill-yellow-500' : 'text-slate-300'}`}
+                                                        className={`h-5 w-5 ${i < rating ? 'text-yellow-500 fill-yellow-500' : 'text-slate-300'}`}
                                                     />
                                                 ))}
                                             </div>
-                                            <span className="text-slate-600">
-                                                {shop.rating} out of 5
-                                            </span>
+                                            <span className="text-slate-600">{rating} out of 5</span>
                                         </div>
-                                        <p className="text-sm text-slate-500">
-                                            Based on {shop.reviewCount} customer
-                                            reviews
-                                        </p>
+                                        <p className="text-sm text-slate-500">Based on {reviewCount} customer reviews</p>
                                     </CardContent>
                                 </Card>
                             </div>
@@ -190,35 +260,22 @@ export default function Home() {
                     </div>
                 </section>
 
-                {/* Services Section */}
                 <section id="services" className="py-16 bg-slate-50">
                     <div className="container mx-auto px-4">
                         <div className="text-center mb-12">
-                            <h2 className="text-3xl font-bold text-blue-800 mb-4">
-                                Our Services
-                            </h2>
+                            <h2 className="text-3xl font-bold text-blue-800 mb-4">Our Services</h2>
                             <p className="text-slate-600 max-w-2xl mx-auto">
-                                We offer a wide range of professional barber
-                                services to keep you looking your best. All
-                                services include a consultation to ensure you
-                                get exactly what you want.
+                                We offer a wide range of professional barber services to keep you looking your best.
                             </p>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {shop.services.map((service) => (
-                                <Card
-                                    key={service.id}
-                                    className="h-full hover:shadow-md transition-shadow"
-                                >
+                            {services.map((service) => (
+                                <Card key={service.id} className="h-full hover:shadow-md transition-shadow">
                                     <CardHeader>
                                         <div className="flex justify-between items-start">
-                                            <CardTitle className="text-xl text-blue-800">
-                                                {service.name}
-                                            </CardTitle>
-                                            <div className="text-xl font-semibold text-blue-700">
-                                                ${service.price}
-                                            </div>
+                                            <CardTitle className="text-xl text-blue-800">{service.name}</CardTitle>
+                                            <div className="text-xl font-semibold text-blue-700">${service.price}</div>
                                         </div>
                                         <CardDescription className="flex items-center">
                                             <Clock className="h-3 w-3 mr-1" />
@@ -226,9 +283,7 @@ export default function Home() {
                                         </CardDescription>
                                     </CardHeader>
                                     <CardContent>
-                                        <p className="text-slate-600">
-                                            {service.description}
-                                        </p>
+                                        <p className="text-slate-600">{service.description}</p>
                                     </CardContent>
                                 </Card>
                             ))}
@@ -236,10 +291,7 @@ export default function Home() {
 
                         <div className="mt-12 text-center">
                             <Link href="/book">
-                                <Button
-                                    size="lg"
-                                    className="bg-blue-600 hover:bg-blue-700"
-                                >
+                                <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
                                     Book an Appointment
                                 </Button>
                             </Link>
@@ -247,21 +299,17 @@ export default function Home() {
                     </div>
                 </section>
 
-                {/* Testimonials */}
                 <section className="py-16 bg-white">
                     <div className="container mx-auto px-4">
                         <div className="text-center mb-12">
-                            <h2 className="text-3xl font-bold text-blue-800 mb-4">
-                                What Our Customers Say
-                            </h2>
+                            <h2 className="text-3xl font-bold text-blue-800 mb-4">What Our Customers Say</h2>
                             <p className="text-slate-600 max-w-2xl mx-auto">
-                                Don't just take our word for it. Here's what our
-                                customers have to say about their experience.
+                                Don't just take our word for it. Here's what our customers have to say.
                             </p>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            {shop.reviews.map((review) => (
+                            {reviews.map((review) => (
                                 <Card key={review.id} className="h-full">
                                     <CardContent className="pt-6">
                                         <div className="flex mb-4">
@@ -272,22 +320,14 @@ export default function Home() {
                                                 />
                                             ))}
                                         </div>
-                                        <p className="text-slate-600 mb-4">
-                                            "{review.comment}"
-                                        </p>
+                                        <p className="text-slate-600 mb-4">"{review.comment}"</p>
                                         <div className="flex items-center gap-3">
                                             <div className="bg-blue-100 rounded-full w-10 h-10 flex items-center justify-center">
-                                                <span className="text-blue-700 font-medium">
-                                                    {review.name.charAt(0)}
-                                                </span>
+                                                <span className="text-blue-700 font-medium">{review.name.charAt(0)}</span>
                                             </div>
                                             <div>
-                                                <div className="font-medium">
-                                                    {review.name}
-                                                </div>
-                                                <div className="text-sm text-slate-500">
-                                                    {review.date}
-                                                </div>
+                                                <div className="font-medium">{review.name}</div>
+                                                <div className="text-sm text-slate-500">{review.date}</div>
                                             </div>
                                         </div>
                                     </CardContent>
@@ -297,18 +337,13 @@ export default function Home() {
                     </div>
                 </section>
 
-                {/* Contact & Location */}
                 <section id="contact" className="py-16 bg-slate-50">
                     <div className="container mx-auto px-4">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                             <div>
-                                <h2 className="text-3xl font-bold text-blue-800 mb-6">
-                                    Contact & Location
-                                </h2>
+                                <h2 className="text-3xl font-bold text-blue-800 mb-6">Contact & Location</h2>
                                 <p className="text-slate-600 mb-8">
-                                    We're conveniently located in the heart of
-                                    the city. Drop by for a visit or book your
-                                    appointment in advance.
+                                    We're conveniently located in the heart of the city.
                                 </p>
 
                                 <div className="space-y-6">
@@ -317,12 +352,8 @@ export default function Home() {
                                             <MapPin className="h-5 w-5 text-blue-600" />
                                         </div>
                                         <div>
-                                            <h3 className="font-medium">
-                                                Address
-                                            </h3>
-                                            <p className="text-slate-600">
-                                                {shop.location}
-                                            </p>
+                                            <h3 className="font-medium">Address</h3>
+                                            <p className="text-slate-600">{shop.location}</p>
                                         </div>
                                     </div>
 
@@ -331,12 +362,8 @@ export default function Home() {
                                             <Phone className="h-5 w-5 text-blue-600" />
                                         </div>
                                         <div>
-                                            <h3 className="font-medium">
-                                                Phone
-                                            </h3>
-                                            <p className="text-slate-600">
-                                                {shop.phone}
-                                            </p>
+                                            <h3 className="font-medium">Phone</h3>
+                                            <p className="text-slate-600">{shop.phone}</p>
                                         </div>
                                     </div>
 
@@ -345,28 +372,22 @@ export default function Home() {
                                             <Clock className="h-5 w-5 text-blue-600" />
                                         </div>
                                         <div>
-                                            <h3 className="font-medium">
-                                                Working Hours
-                                            </h3>
-                                            <p className="text-slate-600">
-                                                {shop.hours}
-                                            </p>
+                                            <h3 className="font-medium">Working Hours</h3>
+                                            <p className="text-slate-600">{shop.hours}</p>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div className="mt-8">
                                     <Link href="/book">
-                                        <Button className="bg-blue-600 hover:bg-blue-700">
-                                            Book an Appointment
-                                        </Button>
+                                        <Button className="bg-blue-600 hover:bg-blue-700">Book an Appointment</Button>
                                     </Link>
                                 </div>
                             </div>
 
                             <div className="bg-blue-100 rounded-lg overflow-hidden h-[400px]">
                                 <img
-                                    src="/placeholder.svg?height=400&width=600&text=Map+Location"
+                                    src="/images/map.jpg"
                                     alt="Map Location"
                                     className="w-full h-full object-cover"
                                 />

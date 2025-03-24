@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/config/authOptions'
 
 export async function DELETE(
-    req: NextRequest,
+    req: Request,
     context: { params: Promise<{ id: string }> },
 ) {
     try {

@@ -3,7 +3,7 @@ import { prisma } from '@/lib/db'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/config/authOptions'
 
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
     try {
         const session = await getServerSession(authOptions)
         if (!session?.user?.id) {
@@ -84,4 +84,30 @@ export async function POST(req: NextRequest) {
             { status: 500 },
         )
     }
+}
+
+export async function GET() {
+  try {
+    const appointments = await prisma.appointment.findMany({
+      select: {
+        id: true,
+        customerName: true,
+        customerEmail: true,
+        customerPhone: true,
+        date: true,
+        time: true,
+        totalPrice: true,
+        totalDuration: true,
+        createdAt: true,
+        updatedAt: true
+      },
+      orderBy: { date: 'asc' }
+    })
+    return NextResponse.json(appointments)
+  } catch (error) {
+    return NextResponse.json(
+      { error: 'Failed to fetch appointments' },
+      { status: 500 }
+    )
+  }
 }

@@ -1,6 +1,5 @@
 'use client'
 
-// import { useTheme } from 'next-themes'
 import { useSession, signOut } from 'next-auth/react'
 import { useEffect } from 'react'
 import { Input } from '@/components/ui/input'
@@ -9,24 +8,19 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 const Navbar = () => {
-    // const { resolvedTheme, setTheme } = useTheme()
-    const { data: session, status } = useSession() // No need for `update`
-    const router = useRouter() // For navigation
+    const { data: session, status } = useSession()
+    const router = useRouter()
 
-    console.log(session)
-
-    // Debugging: Log session to see if role is present
     useEffect(() => {
         console.log('Session in Navbar:', session)
     }, [session])
 
-    // Check if user is an admin
     const isAdmin = session?.user?.role === 'ADMIN' || false
 
-    if (status === 'loading') return null // Prevent UI from rendering before session loads
+    if (status === 'loading') return null
 
     return (
-        <nav className="flex items-center justify-between p-4 shadow-md">
+        <nav className="flex items-center justify-between p-4 shadow-md border-b-4 border-blue-500">
             {/* Left: Logo + Search */}
             <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2">
@@ -55,7 +49,6 @@ const Navbar = () => {
 
                 {session ? (
                     <div className="flex items-center space-x-4">
-                        {/* Avatar */}
                         <img
                             src={
                                 session.user?.image ||
@@ -64,11 +57,9 @@ const Navbar = () => {
                             alt="User Avatar"
                             className="w-10 h-10 rounded-full"
                         />
-                        {/* Username */}
                         <span className="font-medium">
                             {session.user?.email}
                         </span>
-                        {/* Logout Button */}
                         <button
                             onClick={() => signOut()}
                             className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold transition-all"
