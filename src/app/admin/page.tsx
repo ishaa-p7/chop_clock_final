@@ -52,7 +52,7 @@ export default function AdminDashboard() {
   const filteredAppointments = appointments.filter((appointment) => {
     const today = new Date()
     const appointmentDate = new Date(appointment.date)
-    
+  
     if (filterDate === 'today') {
       return (
         appointmentDate.getDate() === today.getDate() &&
@@ -76,8 +76,33 @@ export default function AdminDashboard() {
       endOfWeek.setDate(startOfWeek.getDate() + 6)
       return appointmentDate >= startOfWeek && appointmentDate <= endOfWeek
     }
+  
+    if (filterDate === 'nextTwoWeeks') {
+      const twoWeeksLater = new Date(today)
+      twoWeeksLater.setDate(today.getDate() + 14)
+      return appointmentDate > today && appointmentDate <= twoWeeksLater
+    }
+  
+    if (filterDate === 'thisMonth') {
+      return (
+        appointmentDate.getMonth() === today.getMonth() &&
+        appointmentDate.getFullYear() === today.getFullYear()
+      )
+    }
+
+    if (filterDate === 'nextMonth') {
+      const nextMonth = (today.getMonth() + 1) % 12
+      const nextMonthYear =
+        today.getMonth() === 11 ? today.getFullYear() + 1 : today.getFullYear()
+      return (
+        appointmentDate.getMonth() === nextMonth &&
+        appointmentDate.getFullYear() === nextMonthYear
+      )
+    }
+  
     return true
   })
+  
 
   const appointmentsByDate = filteredAppointments.reduce(
     (acc, appointment) => {
@@ -174,7 +199,7 @@ export default function AdminDashboard() {
 
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg text-blue-800">Today's Appointments</CardTitle>
+              <CardTitle className="text-lg text-blue-800">Today&apos;s Appointments</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold">
@@ -205,16 +230,19 @@ export default function AdminDashboard() {
                 <div>
                   <Label>Date</Label>
                   <Select value={filterDate} onValueChange={setFilterDate}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="All Dates" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Dates</SelectItem>
-                      <SelectItem value="today">Today</SelectItem>
-                      <SelectItem value="tomorrow">Tomorrow</SelectItem>
-                      <SelectItem value="thisWeek">This Week</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="All Dates" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Dates</SelectItem>
+                    <SelectItem value="today">Today</SelectItem>
+                    <SelectItem value="tomorrow">Tomorrow</SelectItem>
+                    <SelectItem value="thisWeek">This Week</SelectItem>
+                    <SelectItem value="nextTwoWeeks">Next 2 Weeks</SelectItem>
+                    <SelectItem value="thisMonth">This Month</SelectItem>
+                    <SelectItem value="nextMonth">Next Month</SelectItem>
+                  </SelectContent>
+                </Select>
                 </div>
               </div>
 
