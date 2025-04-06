@@ -395,7 +395,6 @@ export default function AdminServices() {
                                                     >
                                                         <Trash className="h-4 w-4" />
                                                     </Button>
-                                                    
                                                 </AlertDialogTrigger>
                                                 <AlertDialogContent>
                                                     <AlertDialogHeader>
@@ -429,7 +428,10 @@ export default function AdminServices() {
                                             </AlertDialog>
 
                                             {/* Update the service */}
-                                        <UpdateService fetchServices={fetchServices} service={service} />
+                                            <UpdateService
+                                                fetchServices={fetchServices}
+                                                service={service}
+                                            />
                                         </div>
                                     </div>
                                 ))

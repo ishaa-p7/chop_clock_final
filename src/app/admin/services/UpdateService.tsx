@@ -91,21 +91,30 @@ function UpdateService({ service, fetchServices }: any) {
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Update Service</DialogTitle>
-                    <DialogDescription>Edit the service details below.</DialogDescription>
+                    <DialogDescription>
+                        Edit the service details below.
+                    </DialogDescription>
                 </DialogHeader>
-                <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 py-4">
+                <form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className="grid gap-4 py-4"
+                >
                     <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="name" className="text-right">
                             Name
                         </Label>
                         <Input
                             id="name"
-                            {...register('name', { required: 'Name is required' })}
+                            {...register('name', {
+                                required: 'Name is required',
+                            })}
                             className="col-span-3"
                         />
                     </div>
                     {errors.name && (
-                        <p className="text-red-500 text-sm ml-[33%]">{errors.name.message}</p>
+                        <p className="text-red-500 text-sm ml-[33%]">
+                            {errors.name.message}
+                        </p>
                     )}
 
                     <div className="grid grid-cols-4 items-center gap-4">
@@ -114,12 +123,16 @@ function UpdateService({ service, fetchServices }: any) {
                         </Label>
                         <Textarea
                             id="description"
-                            {...register('description', { required: 'Description is required' })}
+                            {...register('description', {
+                                required: 'Description is required',
+                            })}
                             className="col-span-3"
                         />
                     </div>
                     {errors.description && (
-                        <p className="text-red-500 text-sm ml-[33%]">{errors.description.message}</p>
+                        <p className="text-red-500 text-sm ml-[33%]">
+                            {errors.description.message}
+                        </p>
                     )}
 
                     <div className="grid grid-cols-4 items-center gap-4">
@@ -132,13 +145,18 @@ function UpdateService({ service, fetchServices }: any) {
                             {...register('price', {
                                 required: 'Price is required',
                                 valueAsNumber: true,
-                                min: { value: 0, message: 'Price must be non-negative' },
+                                min: {
+                                    value: 0,
+                                    message: 'Price must be non-negative',
+                                },
                             })}
                             className="col-span-3"
                         />
                     </div>
                     {errors.price && (
-                        <p className="text-red-500 text-sm ml-[33%]">{errors.price.message}</p>
+                        <p className="text-red-500 text-sm ml-[33%]">
+                            {errors.price.message}
+                        </p>
                     )}
 
                     <div className="grid grid-cols-4 items-center gap-4">
@@ -151,13 +169,19 @@ function UpdateService({ service, fetchServices }: any) {
                             {...register('duration', {
                                 required: 'Duration is required',
                                 valueAsNumber: true,
-                                min: { value: 1, message: 'Duration must be at least 1 minute' },
+                                min: {
+                                    value: 1,
+                                    message:
+                                        'Duration must be at least 1 minute',
+                                },
                             })}
                             className="col-span-3"
                         />
                     </div>
                     {errors.duration && (
-                        <p className="text-red-500 text-sm ml-[33%]">{errors.duration.message}</p>
+                        <p className="text-red-500 text-sm ml-[33%]">
+                            {errors.duration.message}
+                        </p>
                     )}
 
                     <DialogFooter className="mt-4">

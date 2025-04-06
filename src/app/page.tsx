@@ -1,71 +1,77 @@
-"use client"
+'use client'
 
-import { useState, useEffect } from "react"
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Scissors, Clock, MapPin, Phone, Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 
 interface Shop {
-  id: string
-  name: string
-  tagline: string
-  description: string
-  hours: string
-  phone: string
-  location: string
+    id: string
+    name: string
+    tagline: string
+    description: string
+    hours: string
+    phone: string
+    location: string
 }
 
 interface Service {
-  id: string
-  name: string
-  description: string
-  price: number
-  duration: number
+    id: string
+    name: string
+    description: string
+    price: number
+    duration: number
 }
 
 const features = [
-  {
-    title: "Expert Barbers",
-    description: "Certified professionals with 10+ years experience",
-    icon: Scissors
-  },
-  {
-    title: "Premium Products",
-    description: "We use only top-quality grooming products",
-    icon: Star
-  },
-  {
-    title: "Hygiene First",
-    description: "Sterilized tools & single-use materials",
-    icon: MapPin
-  }
+    {
+        title: 'Expert Barbers',
+        description: 'Certified professionals with 10+ years experience',
+        icon: Scissors,
+    },
+    {
+        title: 'Premium Products',
+        description: 'We use only top-quality grooming products',
+        icon: Star,
+    },
+    {
+        title: 'Hygiene First',
+        description: 'Sterilized tools & single-use materials',
+        icon: MapPin,
+    },
 ]
 
 const reviews = [
-  {
-    id: "1",
-    name: "John Smith",
-    comment: "Best barber experience I've ever had!",
-    rating: 5,
-    date: "2024-03-15"
-  },
-  {
-    id: "2",
-    name: "Mike Johnson",
-    comment: "Consistently great haircuts every time",
-    rating: 5,
-    date: "2024-02-28"
-  },
-  {
-    id: "3",
-    name: "Sarah Wilson",
-    comment: "Friendly staff and amazing service",
-    rating: 4,
-    date: "2024-03-10"
-  }
+    {
+        id: '1',
+        name: 'John Smith',
+        comment: "Best barber experience I've ever had!",
+        rating: 5,
+        date: '2024-03-15',
+    },
+    {
+        id: '2',
+        name: 'Mike Johnson',
+        comment: 'Consistently great haircuts every time',
+        rating: 5,
+        date: '2024-02-28',
+    },
+    {
+        id: '3',
+        name: 'Sarah Wilson',
+        comment: 'Friendly staff and amazing service',
+        rating: 4,
+        date: '2024-03-10',
+    },
 ]
 
 const rating = 4.8
@@ -82,11 +88,13 @@ export default function Home() {
             try {
                 const [shopResponse, servicesResponse] = await Promise.all([
                     fetch('/api/shop'),
-                    fetch('/api/services')
+                    fetch('/api/services'),
                 ])
 
-                if (!shopResponse.ok) throw new Error('Failed to fetch shop data')
-                if (!servicesResponse.ok) throw new Error('Failed to fetch services')
+                if (!shopResponse.ok)
+                    throw new Error('Failed to fetch shop data')
+                if (!servicesResponse.ok)
+                    throw new Error('Failed to fetch services')
 
                 const shopData = await shopResponse.json()
                 const servicesData = await servicesResponse.json()
@@ -94,7 +102,9 @@ export default function Home() {
                 setShop(shopData)
                 setServices(servicesData)
             } catch (err) {
-                setError(err instanceof Error ? err.message : 'Failed to load data')
+                setError(
+                    err instanceof Error ? err.message : 'Failed to load data',
+                )
             } finally {
                 setLoading(false)
             }
@@ -134,7 +144,6 @@ export default function Home() {
                     <div className="h-[500px] bg-blue-100 relative">
                         <img
                             src="images/banner1.jpg"
-        
                             alt="Barber Shop"
                             className="w-full h-full object-cover"
                         />
@@ -152,12 +161,19 @@ export default function Home() {
                                     </p>
                                     <div className="flex flex-wrap gap-4">
                                         <Link href="/book">
-                                            <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
+                                            <Button
+                                                size="lg"
+                                                className="bg-blue-600 hover:bg-blue-700"
+                                            >
                                                 Book Appointment
                                             </Button>
                                         </Link>
                                         <Link href="/#services">
-                                            <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-blue-700/20">
+                                            <Button
+                                                size="lg"
+                                                variant="outline"
+                                                className="bg-transparent border-white text-white hover:bg-blue-700/20"
+                                            >
                                                 View Services
                                             </Button>
                                         </Link>
@@ -185,8 +201,12 @@ export default function Home() {
                                         <Clock className="h-5 w-5 text-blue-600" />
                                     </div>
                                     <div>
-                                        <div className="text-sm text-slate-500">Working Hours</div>
-                                        <div className="font-medium">{shop.hours}</div>
+                                        <div className="text-sm text-slate-500">
+                                            Working Hours
+                                        </div>
+                                        <div className="font-medium">
+                                            {shop.hours}
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2">
@@ -194,8 +214,12 @@ export default function Home() {
                                         <Phone className="h-5 w-5 text-blue-600" />
                                     </div>
                                     <div>
-                                        <div className="text-sm text-slate-500">Contact Us</div>
-                                        <div className="font-medium">{shop.phone}</div>
+                                        <div className="text-sm text-slate-500">
+                                            Contact Us
+                                        </div>
+                                        <div className="font-medium">
+                                            {shop.phone}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -212,7 +236,10 @@ export default function Home() {
                                 </div>
                                 <div className="grid grid-cols-3 gap-4">
                                     {[1, 2, 3].map((i) => (
-                                        <div key={i} className="aspect-square bg-blue-100 rounded-lg overflow-hidden object-top">
+                                        <div
+                                            key={i}
+                                            className="aspect-square bg-blue-100 rounded-lg overflow-hidden object-top"
+                                        >
                                             <img
                                                 src={`/images/square1.jpg`}
                                                 alt={`Gallery ${i}`}
@@ -225,18 +252,29 @@ export default function Home() {
                             <div>
                                 <Card>
                                     <CardHeader>
-                                        <CardTitle className="text-xl text-blue-800">Why Choose Us?</CardTitle>
-                                        <CardDescription>Experience the difference</CardDescription>
+                                        <CardTitle className="text-xl text-blue-800">
+                                            Why Choose Us?
+                                        </CardTitle>
+                                        <CardDescription>
+                                            Experience the difference
+                                        </CardDescription>
                                     </CardHeader>
                                     <CardContent className="space-y-4">
                                         {features.map((feature, index) => (
-                                            <div key={index} className="flex gap-3">
+                                            <div
+                                                key={index}
+                                                className="flex gap-3"
+                                            >
                                                 <div className="bg-blue-100 p-2 rounded-full h-10 w-10 flex items-center justify-center shrink-0">
                                                     <feature.icon className="h-5 w-5 text-blue-600" />
                                                 </div>
                                                 <div>
-                                                    <h3 className="font-medium">{feature.title}</h3>
-                                                    <p className="text-sm text-slate-500">{feature.description}</p>
+                                                    <h3 className="font-medium">
+                                                        {feature.title}
+                                                    </h3>
+                                                    <p className="text-sm text-slate-500">
+                                                        {feature.description}
+                                                    </p>
                                                 </div>
                                             </div>
                                         ))}
@@ -250,9 +288,14 @@ export default function Home() {
                                                     />
                                                 ))}
                                             </div>
-                                            <span className="text-slate-600">{rating} out of 5</span>
+                                            <span className="text-slate-600">
+                                                {rating} out of 5
+                                            </span>
                                         </div>
-                                        <p className="text-sm text-slate-500">Based on {reviewCount} customer reviews</p>
+                                        <p className="text-sm text-slate-500">
+                                            Based on {reviewCount} customer
+                                            reviews
+                                        </p>
                                     </CardContent>
                                 </Card>
                             </div>
@@ -263,19 +306,29 @@ export default function Home() {
                 <section id="services" className="py-16 bg-slate-50">
                     <div className="container mx-auto px-4">
                         <div className="text-center mb-12">
-                            <h2 className="text-3xl font-bold text-blue-800 mb-4">Our Services</h2>
+                            <h2 className="text-3xl font-bold text-blue-800 mb-4">
+                                Our Services
+                            </h2>
                             <p className="text-slate-600 max-w-2xl mx-auto">
-                                We offer a wide range of professional barber services to keep you looking your best.
+                                We offer a wide range of professional barber
+                                services to keep you looking your best.
                             </p>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {services.map((service) => (
-                                <Card key={service.id} className="h-full hover:shadow-md transition-shadow">
+                                <Card
+                                    key={service.id}
+                                    className="h-full hover:shadow-md transition-shadow"
+                                >
                                     <CardHeader>
                                         <div className="flex justify-between items-start">
-                                            <CardTitle className="text-xl text-blue-800">{service.name}</CardTitle>
-                                            <div className="text-xl font-semibold text-blue-700">${service.price}</div>
+                                            <CardTitle className="text-xl text-blue-800">
+                                                {service.name}
+                                            </CardTitle>
+                                            <div className="text-xl font-semibold text-blue-700">
+                                                ${service.price}
+                                            </div>
                                         </div>
                                         <CardDescription className="flex items-center">
                                             <Clock className="h-3 w-3 mr-1" />
@@ -283,7 +336,9 @@ export default function Home() {
                                         </CardDescription>
                                     </CardHeader>
                                     <CardContent>
-                                        <p className="text-slate-600">{service.description}</p>
+                                        <p className="text-slate-600">
+                                            {service.description}
+                                        </p>
                                     </CardContent>
                                 </Card>
                             ))}
@@ -291,7 +346,10 @@ export default function Home() {
 
                         <div className="mt-12 text-center">
                             <Link href="/book">
-                                <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
+                                <Button
+                                    size="lg"
+                                    className="bg-blue-600 hover:bg-blue-700"
+                                >
                                     Book an Appointment
                                 </Button>
                             </Link>
@@ -302,9 +360,12 @@ export default function Home() {
                 <section className="py-16 bg-white">
                     <div className="container mx-auto px-4">
                         <div className="text-center mb-12">
-                            <h2 className="text-3xl font-bold text-blue-800 mb-4">What Our Customers Say</h2>
+                            <h2 className="text-3xl font-bold text-blue-800 mb-4">
+                                What Our Customers Say
+                            </h2>
                             <p className="text-slate-600 max-w-2xl mx-auto">
-                                Don't just take our word for it. Here's what our customers have to say.
+                                Don't just take our word for it. Here's what our
+                                customers have to say.
                             </p>
                         </div>
 
@@ -320,14 +381,22 @@ export default function Home() {
                                                 />
                                             ))}
                                         </div>
-                                        <p className="text-slate-600 mb-4">"{review.comment}"</p>
+                                        <p className="text-slate-600 mb-4">
+                                            "{review.comment}"
+                                        </p>
                                         <div className="flex items-center gap-3">
                                             <div className="bg-blue-100 rounded-full w-10 h-10 flex items-center justify-center">
-                                                <span className="text-blue-700 font-medium">{review.name.charAt(0)}</span>
+                                                <span className="text-blue-700 font-medium">
+                                                    {review.name.charAt(0)}
+                                                </span>
                                             </div>
                                             <div>
-                                                <div className="font-medium">{review.name}</div>
-                                                <div className="text-sm text-slate-500">{review.date}</div>
+                                                <div className="font-medium">
+                                                    {review.name}
+                                                </div>
+                                                <div className="text-sm text-slate-500">
+                                                    {review.date}
+                                                </div>
                                             </div>
                                         </div>
                                     </CardContent>
@@ -341,9 +410,12 @@ export default function Home() {
                     <div className="container mx-auto px-4">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                             <div>
-                                <h2 className="text-3xl font-bold text-blue-800 mb-6">Contact & Location</h2>
+                                <h2 className="text-3xl font-bold text-blue-800 mb-6">
+                                    Contact & Location
+                                </h2>
                                 <p className="text-slate-600 mb-8">
-                                    We're conveniently located in the heart of the city.
+                                    We're conveniently located in the heart of
+                                    the city.
                                 </p>
 
                                 <div className="space-y-6">
@@ -352,8 +424,12 @@ export default function Home() {
                                             <MapPin className="h-5 w-5 text-blue-600" />
                                         </div>
                                         <div>
-                                            <h3 className="font-medium">Address</h3>
-                                            <p className="text-slate-600">{shop.location}</p>
+                                            <h3 className="font-medium">
+                                                Address
+                                            </h3>
+                                            <p className="text-slate-600">
+                                                {shop.location}
+                                            </p>
                                         </div>
                                     </div>
 
@@ -362,8 +438,12 @@ export default function Home() {
                                             <Phone className="h-5 w-5 text-blue-600" />
                                         </div>
                                         <div>
-                                            <h3 className="font-medium">Phone</h3>
-                                            <p className="text-slate-600">{shop.phone}</p>
+                                            <h3 className="font-medium">
+                                                Phone
+                                            </h3>
+                                            <p className="text-slate-600">
+                                                {shop.phone}
+                                            </p>
                                         </div>
                                     </div>
 
@@ -372,15 +452,21 @@ export default function Home() {
                                             <Clock className="h-5 w-5 text-blue-600" />
                                         </div>
                                         <div>
-                                            <h3 className="font-medium">Working Hours</h3>
-                                            <p className="text-slate-600">{shop.hours}</p>
+                                            <h3 className="font-medium">
+                                                Working Hours
+                                            </h3>
+                                            <p className="text-slate-600">
+                                                {shop.hours}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div className="mt-8">
                                     <Link href="/book">
-                                        <Button className="bg-blue-600 hover:bg-blue-700">Book an Appointment</Button>
+                                        <Button className="bg-blue-600 hover:bg-blue-700">
+                                            Book an Appointment
+                                        </Button>
                                     </Link>
                                 </div>
                             </div>

@@ -87,27 +87,27 @@ export async function POST(req: Request) {
 }
 
 export async function GET() {
-  try {
-    const appointments = await prisma.appointment.findMany({
-      select: {
-        id: true,
-        customerName: true,
-        customerEmail: true,
-        customerPhone: true,
-        date: true,
-        time: true,
-        totalPrice: true,
-        totalDuration: true,
-        createdAt: true,
-        updatedAt: true
-      },
-      orderBy: { date: 'asc' }
-    })
-    return NextResponse.json(appointments)
-  } catch (error) {
-    return NextResponse.json(
-      { error: 'Failed to fetch appointments' },
-      { status: 500 }
-    )
-  }
+    try {
+        const appointments = await prisma.appointment.findMany({
+            select: {
+                id: true,
+                customerName: true,
+                customerEmail: true,
+                customerPhone: true,
+                date: true,
+                time: true,
+                totalPrice: true,
+                totalDuration: true,
+                createdAt: true,
+                updatedAt: true,
+            },
+            orderBy: { date: 'asc' },
+        })
+        return NextResponse.json(appointments)
+    } catch (error) {
+        return NextResponse.json(
+            { error: 'Failed to fetch appointments' },
+            { status: 500 },
+        )
+    }
 }
