@@ -37,6 +37,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { toast } from '@/components/ui/use-toast'
 import { shop } from '@/lib/data'
+import UpdateService from './UpdateService'
 
 export default function AdminServices() {
     const router = useRouter()
@@ -402,11 +403,11 @@ export default function AdminServices() {
                                                             Delete Service
                                                         </AlertDialogTitle>
                                                         <AlertDialogDescription>
-                                                            Are you sure you
+                                                            {`Are you sure you
                                                             want to delete "
-                                                            {service.name}"?
+                                                            ${service.name}"?
                                                             This action cannot
-                                                            be undone.
+                                                            be undone.`}
                                                         </AlertDialogDescription>
                                                     </AlertDialogHeader>
                                                     <AlertDialogFooter>
@@ -426,7 +427,9 @@ export default function AdminServices() {
                                                     </AlertDialogFooter>
                                                 </AlertDialogContent>
                                             </AlertDialog>
-                                            
+
+                                            {/* Update the service */}
+                                        <UpdateService fetchServices={fetchServices} service={service} />
                                         </div>
                                     </div>
                                 ))
