@@ -2,7 +2,7 @@
 
 import { useSession, signOut } from 'next-auth/react'
 import { useEffect } from 'react'
-import { Input } from '@/components/ui/input'
+// import { Input } from '@/components/ui/input'
 import { ModeToggle } from '@/components/theme-toggler'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -31,7 +31,7 @@ const Navbar = () => {
                         ChopClock
                     </Link>
                 </div>
-                <Input placeholder="Search..." className="w-64" />
+                {/* <Input placeholder="Search..." className="w-64" /> */}
             </div>
 
             {/* Right: Theme Toggle + Auth Buttons */}
