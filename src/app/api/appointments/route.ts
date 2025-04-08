@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/config/authOptions'
+import { sendAppointmentConfirmationEmail } from '@/utils/sendEmail'
 
 export async function POST(req: Request) {
     try {
@@ -75,6 +76,15 @@ export async function POST(req: Request) {
                 },
             },
         })
+
+
+        //Mail the user.
+        try {
+            sendAppointmentConfirmationEmail({username : name , userEmail: email , date})
+        } catch (error) {
+            console.log(error);
+            
+        }
 
         return NextResponse.json(appointment, { status: 201 })
     } catch (error) {
