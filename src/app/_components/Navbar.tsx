@@ -57,9 +57,11 @@ const Navbar = () => {
                             alt="User Avatar"
                             className="w-10 h-10 rounded-full"
                         />
+                        <Link href={'/user'}>
                         <span className="font-medium">
                             {session.user?.email}
                         </span>
+                        </Link>
                         <button
                             onClick={() => signOut()}
                             className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold transition-all"
