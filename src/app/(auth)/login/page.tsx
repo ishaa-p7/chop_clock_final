@@ -26,11 +26,11 @@ export default function LoginPage() {
                     </div>
                 </div>
                 <div className="relative hidden bg-muted lg:block">
-                    <img
-                        src="/placeholder.svg"
+                    {/* <img
+                        src="https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDI0LTA5L2NvbG9yLWJsdWUtamotMDA2LWIuanBn.jpg"
                         alt="Image"
                         className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-                    />
+                    /> */}
                 </div>
             </div>
         </AuthGuard>

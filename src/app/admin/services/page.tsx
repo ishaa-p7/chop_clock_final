@@ -174,7 +174,7 @@ export default function AdminServices() {
 
     return (
         <div className="min-h-screen bg-slate-50">
-            <header className="bg-blue-600 text-white">
+            {/* <header className="bg-blue-600 text-white">
                 <div className="container mx-auto px-4 py-6">
                     <div className="flex justify-between items-center">
                         <div className="flex items-center gap-2">
@@ -194,7 +194,7 @@ export default function AdminServices() {
                         </div>
                     </div>
                 </div>
-            </header>
+            </header> */}
 
             <main className="container mx-auto px-4 py-8">
                 <div className="flex justify-between items-center mb-8">
@@ -441,14 +441,14 @@ export default function AdminServices() {
                 </Card>
             </main>
 
-            <footer className="bg-blue-800 text-white py-8 mt-20">
+            {/* <footer className="bg-blue-800 text-white py-8 mt-20">
                 <div className="container mx-auto px-4 text-center">
                     <p className="text-blue-200">
                         © {new Date().getFullYear()} {shop.name} Admin
                         Dashboard. All rights reserved.
                     </p>
                 </div>
-            </footer>
+            </footer> */}
         </div>
     )
 }

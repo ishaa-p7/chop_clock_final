@@ -129,7 +129,7 @@ export default function AdminShop() {
 
     return (
         <div className="min-h-screen bg-slate-50">
-            <header className="bg-blue-600 text-white">
+            {/* <header className="bg-blue-600 text-white">
                 <div className="container mx-auto px-4 py-6">
                     <div className="flex justify-between items-center">
                         <div className="flex items-center gap-2">
@@ -149,7 +149,7 @@ export default function AdminShop() {
                         </div>
                     </div>
                 </div>
-            </header>
+            </header> */}
 
             <main className="container mx-auto px-4 py-8">
                 <div className="flex justify-between items-center mb-8">
